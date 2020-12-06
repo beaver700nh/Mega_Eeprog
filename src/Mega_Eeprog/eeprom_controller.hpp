@@ -12,10 +12,10 @@ class EepromController
     EepromAddrBus m_eab;
     EepromDataBus m_edb;
 
-    uint8_t m_eeprom_cs;
+    uint8_t m_eeprom_we;
 
   public:
-    EepromController(uint8_t eeprom_cs);
+    EepromController(uint8_t eeprom_we);
     void set_eeprom(uint16_t addr, uint8_t data);
     uint8_t get_eeprom(uint16_t addr);
 }
