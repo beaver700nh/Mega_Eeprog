@@ -1,3 +1,6 @@
+#ifndef PIN_CONSTANTS_H
+#define PIN_CONSTANTS_H
+
 #define LED_0 32
 #define LED_1 33
 #define LED_2 31
@@ -19,3 +22,5 @@
 #define EEPROM_WE_A A8
 #define EEPROM_WE_B 2
 #define EEPROM_WE_C 22
+
+#endif
