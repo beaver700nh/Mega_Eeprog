@@ -1,9 +1,4 @@
-#include <SPI.h>
-#include <SD.h>
-#include "eeprom_controller.hpp"
 #include "pin_constants.hpp"
-
-//EepromController ec(EEPROM_WE_C);
 
 int foo = LOW;
 
@@ -35,4 +30,10 @@ void loop()
   digitalWrite(LED_3, HIGH);
   delay(500);
   digitalWrite(LED_3, LOW);
+  digitalWrite(LED_2, HIGH);
+  delay(500);
+  digitalWrite(LED_2, LOW);
+  digitalWrite(LED_1, HIGH);
+  delay(500);
+  digitalWrite(LED_1, LOW);
 }

@@ -12,6 +12,6 @@ class ShiftRegister
   public:
     ShiftRegister(uint8_t cs, uint8_t bit_order);
     void shift(uint16_t data);
-}
+};
 
 #endif

@@ -18,6 +18,6 @@ class EepromController
     EepromController(uint8_t eeprom_we);
     void set_eeprom(uint16_t addr, uint8_t data);
     uint8_t get_eeprom(uint16_t addr);
-}
+};
 
 #endif

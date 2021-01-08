@@ -13,6 +13,6 @@ class EepromAddrBus
   public:
     EepromAddrBus(uint8_t shr_cs);
     void set_address(uint16_t addr, bool oe);
-}
+};
 
 #endif

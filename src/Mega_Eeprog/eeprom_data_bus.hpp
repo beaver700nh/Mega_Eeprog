@@ -12,6 +12,6 @@ class EepromDataBus
     EepromDataBus(uint8_t bit_order);
     void set_data(uint8_t data);
     uint8_t get_data();
-}
+};
 
 #endif
