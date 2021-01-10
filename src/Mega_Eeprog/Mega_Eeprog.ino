@@ -1,38 +1,40 @@
 #include <SPI.h>
 #include <SD.h>
 #include "eeprom_controller.hpp"
+#include "number_input.hpp"
 #include "pin_constants.hpp"
 
 //EepromController ec(EEPROM_WE_C);
 
-int foo = LOW;
+InputBtns btns(false, 5);
+OutputLeds leds;
 
 void setup()
 {
-  pinMode(LED_0, OUTPUT);
-  pinMode(LED_1, OUTPUT);
-  pinMode(LED_2, OUTPUT);
-  pinMode(LED_3, OUTPUT);
+  Serial.begin(57600);
 
-  pinMode(RW_SIG, OUTPUT);
+  btns.begin();
+  leds.begin();
 }
 
 void loop()
 {
-  digitalWrite(RW_SIG, foo);
+  btns.update();
 
-  foo = (foo == LOW ? HIGH : LOW);
+  if (btns.available()) {
+    Serial.println(F("Available!"));
 
-  digitalWrite(LED_0, HIGH);
-  delay(500);
-  digitalWrite(LED_0, LOW);
-  digitalWrite(LED_1, HIGH);
-  delay(500);
-  digitalWrite(LED_1, LOW);
-  digitalWrite(LED_2, HIGH);
-  delay(500);
-  digitalWrite(LED_2, LOW);
-  digitalWrite(LED_3, HIGH);
-  delay(500);
-  digitalWrite(LED_3, LOW);
+    uint8_t val = btns.get_val();
+    Serial.print(F("Value: "));
+    Serial.println(val, DEC);
+    leds.show(val);
+  }
+
+  if (btns.selected()) {
+    Serial.println(F("Selected!"));
+
+    leds.show(0x0F);
+    delay(1000);
+    leds.show(0x00);
+  }
 }
