@@ -6,7 +6,8 @@
 
 #include "pin_constants.hpp"
 
-class InputBtns {
+class InputBtns
+{
   private:
     bool m_available = false;
     bool m_selected = false;
@@ -16,7 +17,8 @@ class InputBtns {
     bool m_use_extern_resistors;
     int m_interval;
 
-    Bounce *m_buttons[3] = {
+    Bounce *m_buttons[3] = \
+    {
       new Bounce(),
       new Bounce(),
       new Bounce()
@@ -33,7 +35,8 @@ class InputBtns {
     int8_t get_val();
 };
 
-class OutputLeds {
+class OutputLeds
+{
   public:
     OutputLeds();
 

@@ -6,12 +6,18 @@
 class ShiftRegister
 {
   private:
-    uint8_t m_cs;
     uint8_t m_bit_order;
+    bool m_const_oe;
 
   public:
-    ShiftRegister(uint8_t cs, uint8_t bit_order);
+    ShiftRegister(uint8_t bit_order, bool const_oe);
+    void begin();
+
     void shift(uint16_t data);
+    void update();
+
+    void output_on();
+    void output_off();
 };
 
 #endif

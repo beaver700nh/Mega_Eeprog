@@ -11,8 +11,9 @@ class EepromAddrBus
     ShiftRegister m_shr;
 
   public:
-    EepromAddrBus(uint8_t shr_cs);
-    void set_address(uint16_t addr, bool oe);
+    EepromAddrBus();
+    void begin();
+    void set_addr(uint16_t addr, bool oe);
 };
 
 #endif

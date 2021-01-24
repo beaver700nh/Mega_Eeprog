@@ -17,7 +17,9 @@
 
 #define RW_SIG 49
 
-#define EEPROM_DATA_BUS PORTF
+#define EEPROM_DATA_OUT PORTF
+#define EEPROM_DATA_IN  PINF
+#define EEPROM_DATA_DIR DDRF
 
 #define EEPROM_WE_A A8
 #define EEPROM_WE_B 2

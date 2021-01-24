@@ -2,12 +2,14 @@
 
 #include "number_input.hpp"
 
-InputBtns::InputBtns(bool uer, int itv) {
+InputBtns::InputBtns(bool uer, int itv)
+{
   m_use_extern_resistors = uer;
   m_interval = itv;
 }
 
-void InputBtns::begin() {
+void InputBtns::begin()
+{
   uint8_t pins[] = {BTN_UP, BTN_DN, BTN_SEL};
 
   for (uint8_t i = 0; i < 3; ++i) {
@@ -17,7 +19,8 @@ void InputBtns::begin() {
   }
 }
 
-void InputBtns::update() {
+void InputBtns::update() 
+{
   for (uint8_t i = 0; i < 3; ++i) {
     m_buttons[i]->update();
   }
@@ -36,11 +39,13 @@ void InputBtns::update() {
   }
 }
 
-bool InputBtns::available() {
+bool InputBtns::available()
+{
   return m_available;
 }
 
-bool InputBtns::selected() {
+bool InputBtns::selected()
+{
   if (m_selected) {
     m_selected = false;
     return true;
@@ -50,7 +55,8 @@ bool InputBtns::selected() {
   }
 }
 
-int8_t InputBtns::get_val() {
+int8_t InputBtns::get_val()
+{
   if (m_available) {
     m_available = false;
     return m_val;
@@ -60,18 +66,21 @@ int8_t InputBtns::get_val() {
   }
 }
 
-OutputLeds::OutputLeds() {
+OutputLeds::OutputLeds()
+{
   /* empty ctor */;
 }
 
-void OutputLeds::begin() {
+void OutputLeds::begin()
+{
   pinMode(LED_0, OUTPUT);
   pinMode(LED_1, OUTPUT);
   pinMode(LED_2, OUTPUT);
   pinMode(LED_3, OUTPUT);
 }
 
-void OutputLeds::show(uint8_t val) {
+void OutputLeds::show(uint8_t val)
+{
   digitalWrite(LED_0, val & 0x01);
   digitalWrite(LED_1, val & 0x02);
   digitalWrite(LED_2, val & 0x04);

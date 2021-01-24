@@ -1,40 +1,38 @@
 #include <SPI.h>
 #include <SD.h>
+
 #include "eeprom_controller.hpp"
 #include "number_input.hpp"
 #include "pin_constants.hpp"
 
-//EepromController ec(EEPROM_WE_C);
+#include "eeprom_addr_bus.hpp"
 
-InputBtns btns(false, 5);
-OutputLeds leds;
+EepromController ec(EEPROM_WE_B);
 
 void setup()
 {
-  Serial.begin(57600);
+  delay(1000);
 
-  btns.begin();
-  leds.begin();
+  Serial.begin(115200);
+  while (!Serial) {
+    /* wait for Serial connection */;
+  }
+
+  ec.begin();
+
+  Serial.println("Reading EEPROM...");
+  for (uint16_t i = 0x0000; i < 0x003F; ++i) {
+    uint8_t d = ec.get_eeprom(i);
+    Serial.println(d, HEX);
+  }
+
+  Serial.println("Writing Test...");
+  ec.set_eeprom(0x0000, 0x33);
+
+  Serial.println("Reading Test...");
+  Serial.println(ec.get_eeprom(0x0000), HEX);
 }
 
 void loop()
 {
-  btns.update();
-
-  if (btns.available()) {
-    Serial.println(F("Available!"));
-
-    uint8_t val = btns.get_val();
-    Serial.print(F("Value: "));
-    Serial.println(val, DEC);
-    leds.show(val);
-  }
-
-  if (btns.selected()) {
-    Serial.println(F("Selected!"));
-
-    leds.show(0x0F);
-    delay(1000);
-    leds.show(0x00);
-  }
 }

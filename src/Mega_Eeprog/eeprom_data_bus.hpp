@@ -6,10 +6,12 @@
 class EepromDataBus
 {
   private:
-    uint8_t m_bit_order;
+    bool m_mode;
+    void set_mode(bool mode);
 
   public:
-    EepromDataBus(uint8_t bit_order);
+    EepromDataBus();
+    void begin();
     void set_data(uint8_t data);
     uint8_t get_data();
 };
