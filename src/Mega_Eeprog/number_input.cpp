@@ -24,46 +24,15 @@ void InputBtns::update()
   for (uint8_t i = 0; i < 3; ++i) {
     m_buttons[i]->update();
   }
-
-  if (m_buttons[0]->fell()) {
-    ++m_val;
-    m_available = true;
-  }
-  else if (m_buttons[1]->fell()) {
-    --m_val;
-    m_available = true;
-  }
-
-  if (m_buttons[2]->fell()) {
-    m_selected = true;
-  }
 }
 
-bool InputBtns::available()
+uint8_t InputBtns::get_status()
 {
-  return m_available;
-}
+  bool a = m_buttons[0]->fell();
+  bool b = m_buttons[1]->fell();
+  bool c = m_buttons[2]->fell();
 
-bool InputBtns::selected()
-{
-  if (m_selected) {
-    m_selected = false;
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
-int8_t InputBtns::get_val()
-{
-  if (m_available) {
-    m_available = false;
-    return m_val;
-  }
-  else {
-    return -1;
-  }
+  return (a << 2) | (b << 1) | (c);
 }
 
 OutputLeds::OutputLeds()

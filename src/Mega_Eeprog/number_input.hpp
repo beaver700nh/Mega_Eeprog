@@ -30,9 +30,7 @@ class InputBtns
     void begin();
 
     void update();
-    bool available();
-    bool selected();
-    int8_t get_val();
+    uint8_t get_status();
 };
 
 class OutputLeds

@@ -10,6 +10,10 @@
 #define BTN_DN  35
 #define BTN_SEL 36
 
+#define UP_PRESSED  0x04
+#define DN_PRESSED  0x02
+#define SEL_PRESSED 0x01
+
 #define SHR_OE    23
 #define SHR_LATCH 25
 
