@@ -61,12 +61,12 @@ uint8_t Interface::get_int(char *msg1, uint8_t msg2)
 
     if (s & UP_PRESSED)
     {
-      i = (i == 0x0F ? 0x00 : ++i);
+      i = (i == 0x0F ? 0x00 : i + 1);
       m_out.show(i);
     }
     else if (s & DN_PRESSED)
     {
-      i = (i == 0x00 ? 0x0F : --i);
+      i = (i == 0x00 ? 0x0F : i - 1);
       m_out.show(i);
     }
     else if (s & SEL_PRESSED)
@@ -74,4 +74,14 @@ uint8_t Interface::get_int(char *msg1, uint8_t msg2)
       return i;
     }
   }
+}
+
+void Interface::set_leds(uint8_t val)
+{
+  m_out.show(val);
+}
+
+void Interface::message(char *msg)
+{
+  Serial.println(msg);
 }

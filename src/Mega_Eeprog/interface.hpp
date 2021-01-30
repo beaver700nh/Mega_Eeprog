@@ -16,6 +16,9 @@ class Interface
     bool get_bool(char *msg1, uint8_t msg2);
     uint8_t get_int(char *msg1, uint8_t msg2);
 
+    void set_leds(uint8_t val);
+    void message(char *msg);
+
   private:
     InputBtns  m_in;
     OutputLeds m_out;
