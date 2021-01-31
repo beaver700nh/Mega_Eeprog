@@ -20,13 +20,13 @@ void Interface::begin()
   m_out.begin();
 }
 
-void Interface::info(char *msg1, uint8_t msg2)
+void Interface::info(const char *msg1, uint8_t msg2)
 {
   Serial.println(msg1);
   m_out.show(msg2);
 }
 
-bool Interface::get_bool(char *msg1, uint8_t msg2)
+bool Interface::get_bool(const char *msg1, uint8_t msg2)
 {
   info(msg1, msg2);
 
@@ -47,7 +47,7 @@ bool Interface::get_bool(char *msg1, uint8_t msg2)
   }
 }
 
-uint8_t Interface::get_int(char *msg1, uint8_t msg2)
+uint8_t Interface::get_int(const char *msg1, uint8_t msg2)
 {
   info(msg1, msg2);
 
@@ -81,7 +81,7 @@ void Interface::set_leds(uint8_t val)
   m_out.show(val);
 }
 
-void Interface::message(char *msg)
+void Interface::message(const char *msg)
 {
   Serial.println(msg);
 }

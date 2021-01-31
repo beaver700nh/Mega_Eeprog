@@ -1,22 +1,16 @@
 #include <SPI.h>
 #include <SD.h>
 
+#include "Mega_Eeprog.hpp"
 #include "eeprom_controller.hpp"
-#include "number_input.hpp"
 #include "pin_constants.hpp"
-
 #include "interface.hpp"
-
-#define ACTION_WRITE  0x08
-#define ACTION_READ   0x04
-#define ACTION_VECTOR 0x02
 
 //EepromController ec(EEPROM_WE_B);
 
 uint8_t file, slot, vector;
 
-uint8_t get_value(char *prompt1, uint8_t prompt2);
-char *action_str_repr(uint8_t action);
+uint8_t get_value(const char *prompt1, uint8_t prompt2);
 
 bool do_action_write();
 bool do_action_read();
@@ -112,7 +106,7 @@ void loop()
   }
 }
 
-uint8_t get_value(char *prompt1, uint8_t prompt2)
+uint8_t get_value(const char *prompt1, uint8_t prompt2)
 {
   while (true)
   {
@@ -123,26 +117,6 @@ uint8_t get_value(char *prompt1, uint8_t prompt2)
       itf.info("Ok.", 0x00);
       return res;
     }
-  }
-}
-
-char *action_str_repr(uint8_t action)
-{
-  if (action == ACTION_WRITE)
-  {
-    return "<write>";
-  }
-  else if (action == ACTION_READ)
-  {
-    return "<read>";
-  }
-  else if (action == ACTION_VECTOR)
-  {
-    return "<vector-set>";
-  }
-  else
-  {
-    return "<illegal>";
   }
 }
 
