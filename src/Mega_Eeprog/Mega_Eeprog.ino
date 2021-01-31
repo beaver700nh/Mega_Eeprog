@@ -5,8 +5,9 @@
 #include "eeprom_controller.hpp"
 #include "pin_constants.hpp"
 #include "interface.hpp"
+#include "prpr.hpp"
 
-//EepromController ec(EEPROM_WE_B);
+EepromController ec(EEPROM_WE_B);
 
 uint8_t file, slot, vector;
 
@@ -23,6 +24,8 @@ bool (*func)();
 void setup()
 {
   delay(1000);
+
+  ec.begin();
 
   itf.begin();
   itf.info("Welcome to Mega Eeprog by Minh Le!", 0x0F);
@@ -132,7 +135,8 @@ bool do_action_write()
   delay(750);
   if (itf.get_bool("Would you like to verify?", 0x04))
   {
-    return do_action_read();
+    do_action_read();
+    return true;
   }
   else
   {
@@ -147,7 +151,28 @@ bool do_action_read()
   sprintf(msg, "Reading from slot #%d...", slot);
   itf.info(msg, 0x04);
 
-  /* TODO */
+  if (slot >= 8)
+  {
+    itf.info("Invalid slot.", 0x06);
+    return false;
+  }
+
+  uint8_t i = 0;
+  uint8_t data[0xFF];
+
+  while (true)
+  {
+    data[i] = ec.get_eeprom((slot << 8) | i);
+
+    if (i == 0xFF)
+    {
+      break;
+    }
+
+    ++i;
+  }
+
+  prpr_data(data);
 
   itf.info("Done!", 0x0F);
   delay(750);
