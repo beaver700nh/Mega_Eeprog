@@ -1,6 +1,3 @@
-#include <SPI.h>
-#include <SD.h>
-
 #include "Mega_Eeprog.hpp"
 #include "eeprom_controller.hpp"
 #include "pin_constants.hpp"
@@ -9,7 +6,7 @@
 
 EepromController ec(EEPROM_WE_B);
 
-uint8_t file, slot, vector;
+uint8_t file, page_hi, page_lo, vector;
 
 uint8_t get_value(const char *prompt1, uint8_t prompt2);
 
@@ -44,20 +41,23 @@ void loop()
     if (action == ACTION_WRITE)
     {
       file = get_value("Select file to write.", 0x0C);
-      slot = get_value("Select slot to write to.", 0x0C);
+      page_hi = get_value("Select page to write to. (NNNNxxxx)", 0x09);
+      page_lo = get_value("Select page to write to. (xxxxNNNN)", 0x09);
       func = do_action_write;
       break;
     }
     else if (action == ACTION_READ)
     {
-      slot = get_value("Select slot to read from.", 0x0A);
+      page_hi = get_value("Select page to read from. (NNNNxxxx)", 0x05);
+      page_lo = get_value("Select page to read from. (xxxxNNNN)", 0x05);
       func = do_action_read;
       break;
     }
     else if (action == ACTION_VECTOR)
     {
       vector = get_value("Select vector to set.", 0x09);
-      slot = get_value("Select slot to jump to.", 0x09);
+      page_hi = get_value("Select page to jump to. (NNNNxxxx)", 0x03);
+      page_lo = get_value("Select page to jump to. (xxxxNNNN)", 0x03);
       func = do_action_vector;
       break;
     }
@@ -126,34 +126,51 @@ uint8_t get_value(const char *prompt1, uint8_t prompt2)
 bool do_action_write()
 {
   char msg[50];
-  sprintf(msg, "Writing file #%d to slot #%d...", file, slot);
+  sprintf(msg, "Writing file #%d to page %02x%02x", file, page_hi, page_lo);
   itf.info(msg, 0x08);
 
-  /* TODO */
+  if (page_hi >= 8)
+  {
+    itf.info("Invalid page.", 0x06);
+    return false;
+  }
+
+  uint8_t buf[0xFF];
+  sd_read(file, buf);
+
+  uint8_t i = 0;
+
+  while (true)
+  {
+    ec.set_eeprom((page_hi << 12) | (page_lo << 8) | i, buf[i]);
+
+    if (i++ == 0xFF) break;
+  }
 
   itf.info("Done!", 0x0F);
   delay(750);
   if (itf.get_bool("Would you like to verify?", 0x04))
   {
     do_action_read();
-    return true;
   }
   else
   {
     itf.info("Ok.", 0x00);
-    return true;
   }
+
+  return true;
 }
 
 bool do_action_read()
 {
   char msg[50];
-  sprintf(msg, "Reading from slot #%d...", slot);
+  sprintf(msg, "Reading from page %01x%01x", page_hi, page_lo);
   itf.info(msg, 0x04);
+  delay(750);
 
-  if (slot >= 8)
+  if (page_hi >= 8)
   {
-    itf.info("Invalid slot.", 0x06);
+    itf.info("Invalid page.", 0x06);
     return false;
   }
 
@@ -162,17 +179,13 @@ bool do_action_read()
 
   while (true)
   {
-    data[i] = ec.get_eeprom((slot << 8) | i);
+    data[i] = ec.get_eeprom((page_hi << 12) | (page_lo << 8) | i);
 
-    if (i == 0xFF)
-    {
-      break;
-    }
-
-    ++i;
+    if (i++ == 0xFF) break;
   }
 
   prpr_data(data);
+  sd_save(data);
 
   itf.info("Done!", 0x0F);
   delay(750);
@@ -184,20 +197,30 @@ bool do_action_read()
 bool do_action_vector()
 {
   char msg[50];
-  sprintf(msg, "Setting vector #%d to point to slot #%d...", vector, slot);
+  sprintf(msg, "Setting vector 7ff%01x to point to page %01x%01x", vector, page_hi, page_lo);
   itf.info(msg, 0x02);
 
-  /* TODO */
+  if (vector < 0x0A)
+  {
+    itf.info("Invalid vector.", 0x06);
+    return false;
+  }
+
+  ec.set_eeprom(0x7FF0 | vector, 0x00);
+  ec.set_eeprom(0x7FF0 | (vector + 1), (page_hi << 4) | page_lo);
 
   itf.info("Done!", 0x0F);
   delay(750);
   if (itf.get_bool("Would you like to verify?", 0x04))
   {
-    return do_action_read();
+    page_hi = 0x07;
+    page_lo = 0x0f;
+    do_action_read();
   }
   else
   {
     itf.info("Ok.", 0x00);
-    return true;
   }
+
+  return true;
 }
