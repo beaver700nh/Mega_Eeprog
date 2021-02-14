@@ -3,6 +3,9 @@
 #include "pin_constants.hpp"
 #include "interface.hpp"
 #include "prpr.hpp"
+#include "sd_rdwr.hpp"
+
+#include <SD.h>
 
 EepromController ec(EEPROM_WE_B);
 
@@ -28,6 +31,16 @@ void setup()
   itf.info("Welcome to Mega Eeprog by Minh Le!", 0x0F);
   delay(750);
   itf.set_leds(0x00);
+
+  if (!SD.begin(SD_CS)) {
+    itf.info("SD card initialization failed!", 0x06);
+    while (true) {
+      /* freeze */;
+    }
+  }
+  else {
+    itf.message("SD card initialization complete!");
+  }
 }
 
 void loop()
@@ -126,7 +139,7 @@ uint8_t get_value(const char *prompt1, uint8_t prompt2)
 bool do_action_write()
 {
   char msg[50];
-  sprintf(msg, "Writing file #%d to page %02x%02x", file, page_hi, page_lo);
+  sprintf(msg, "Writing file #%d to page %02x", file, (page_hi << 4 | page_lo));
   itf.info(msg, 0x08);
 
   if (page_hi >= 8)
@@ -135,16 +148,16 @@ bool do_action_write()
     return false;
   }
 
-  uint8_t buf[0xFF];
+  int16_t buf[0xFF];
   sd_read(file, buf);
 
   uint8_t i = 0;
 
   while (true)
   {
+    if (buf[i] == -1) break;
     ec.set_eeprom((page_hi << 12) | (page_lo << 8) | i, buf[i]);
-
-    if (i++ == 0xFF) break;
+    ++i;
   }
 
   itf.info("Done!", 0x0F);
